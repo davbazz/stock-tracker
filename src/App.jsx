@@ -30,7 +30,7 @@ function App() {
     //   console.log(data, response)
     // });
 
-    // apple price every 5 minutes
+    // initial price data for last 24 hours
     finnhubClient.stockCandles("AAPL", "1", parseInt((Date.now() - 1000*60*60*24)/1000), parseInt(Date.now()/1000), (error, data, response) => {
       if(error) return console.error(error)
       console.log(data, response)
