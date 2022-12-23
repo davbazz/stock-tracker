@@ -1,37 +1,43 @@
-import { useState } from "react"
-
-function Stocks({ liveApple, liveTesla, liveNike, liveMicrosoft, liveMeta, liveDisney, liveAmazon, liveNvidia, liveStarbucks, liveNetflix } ) {
-
-    const oftenStocks = [
-        { name: 'Apple', shortname: 'AAPL', price: liveApple },
-        { name: 'Tesla', shortname: 'TSLA', price: liveTesla },
-        { name: 'Nike', shortname: 'NKE', price: liveNike },
-        { name: 'Microsoft', shortname: 'MSFT', price: liveMicrosoft },
-        { name: 'Meta', shortname: 'META', price: liveMeta },
-        { name: 'Disney', shortname: 'DIS', price: liveDisney },
-        { name: 'Amazon', shortname: 'AMZN', price: liveAmazon },
-        { name: 'Nvidia', shortname: 'NVDA', price: liveNvidia },
-        { name: 'Starbucks', shortname: 'SBUX', price: liveStarbucks },
-        { name: 'Netflix', shortname: 'NFLX', price: liveNetflix }
-    ]
-
+function Stocks({ selectedCompany, setSelectedCompany, selectedCompanies, live }) {
+    // "live" looks like this 
+    // {
+    //     APPL: {
+    //         c: 2,
+    //         d: 2
+    //     },
+    //     AMZN: {
+    //         c: 2,
+    //         d: 2
+    //     },
+    // }
     return (
         <div className="Stocks">
             <h3 className="text-xl text-center">Often looking for</h3>
             <div className="flex justify-between items-center flex-col">
-            {oftenStocks.map(stock => (
-                <div className="flex justify-between items-center w-full">
-                    <div className="flex flex-col w-4/12">
-                        <span>{stock.shortname}</span>
-                        <span>{stock.name}</span>
-                    </div>
-                    <div className="w-4/12 text-center">chart</div>
-                    <div className="flex flex-col w-4/12 text-right">
-                        <span>{stock.price}</span>
-                        <span>daily change</span>
-                    </div>
-                </div>
-            ))}
+
+            {Object.keys(live).map(stockKey => {
+                const stock = live[stockKey]
+                const company = selectedCompanies.find(c => c.stockSymbol == stockKey)
+                // console.log({stockKey, stock, company})
+                return (
+                    <div className="flex justify-between items-center w-full"
+                        style={{
+                            background: selectedCompany === stockKey ? "lime": "white"
+                        }}
+                        onClick={()=> setSelectedCompany(stockKey)}
+                    >
+                        <div className="flex flex-col w-4/12">
+                            <span>{company.stockSymbol}</span>
+                            <span>{company.name}</span>
+                        </div>
+                        <div className="w-4/12 text-center">chart</div>
+                        <div className="flex flex-col w-4/12 text-right">
+                            <span>{stock.c}</span>
+                            <span>{stock.d}</span>
+                        </div>
+                    </div>)
+                }
+            )}
             </div>
             
             {/*<div className="list flex justify-between items-center">

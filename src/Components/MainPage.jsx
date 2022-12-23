@@ -1,110 +1,125 @@
 import Diagram from "./Diagram"
-import Fall from "./Fall"
-import Rise from "./Rise"
+// import Fall from "./Fall"
+// import Rise from "./Rise"
 import Stocks from "./Stocks"
 import * as finnhub from 'finnhub'
 import { useEffect, useState } from 'react';
 
 
-
 function MainPage() {
-    const [liveApple, setLiveApple] = useState(0)
-    const [liveTesla, setLiveTesla] = useState(0)
-    const [liveNike, setLiveNike] = useState(0)
-    const [liveMicrosoft, setLiveMicrosoft] = useState(0)
-    const [liveMeta, setLiveMeta] = useState(0)
-    const [liveDisney, setLiveDisney] = useState(0)
-    const [liveAmazon, setLiveAmazon] = useState(0)
-    const [liveNvidia, setLiveNvidia] = useState(0)
-    const [liveStarbucks, setLiveStarbucks] = useState(0)
-    const [liveNetflix, setLiveNetflix] = useState(0)
+
+    const [selectedCompanies, setSelectedCompanies] = useState([
+        { name: 'Apple', stockSymbol: 'AAPL' },
+        { name: 'Tesla', stockSymbol: 'TSLA' },
+        { name: 'Nike', stockSymbol: 'NKE' },
+        { name: 'Microsoft', stockSymbol: 'MSFT' },
+        { name: 'Meta', stockSymbol: 'META' },
+        { name: 'Disney', stockSymbol: 'DIS' },
+        { name: 'Amazon', stockSymbol: 'AMZN' },
+        { name: 'Nvidia', stockSymbol: 'NVDA' },
+        { name: 'Starbucks', stockSymbol: 'SBUX' },
+        { name: 'Netflix', stockSymbol: 'NFLX' }
+    ])
+
+    const [selectedCompany, setSelectedCompany] = useState("AAPL")
+    const [live, setLive] = useState({})
+    const [candles, setCandles] = useState({})
+    const [numberOfDaysToFetch, setNumberOfDaysToFetch] = useState(100)
+    // const [rawData, setRawData] = useState()
+    // const [diagramData, setDiagramData] = useState()
 
 
-    const [appleCandles24, setAppleCandles24] = useState([]);
-    const [high, setHigh] = useState(0);
-    const [low, setLow] = useState(0);
-  
+
+    // useEffect(() => {
+    //     console.log(rawData)
+    //     setDiagramData(() => ([ 
+    //         {symbol: rawData["Meta Data"]["2. Symbol"]},
+    //         {dates: Object.keys(rawData['Time Series (Daily)'])},
+    //         {prices: Object.values(rawData['Time Series (Daily)'][0])}
+    //     ]))
+    //         // .then(console.log(diagramData))
+    // }, [rawData])
+
     useEffect(() => {
-        const api_key = finnhub.ApiClient.instance.authentications['api_key'];
-        api_key.apiKey = "cdukjcaad3ib3oqti880cdukjcaad3ib3oqti88g"
+        
+        // finhub api connection
+        const api_key_finnhub = finnhub.ApiClient.instance.authentications['api_key'];
+        api_key_finnhub.apiKey = "cdukjcaad3ib3oqti880cdukjcaad3ib3oqti88g"
         const finnhubClient = new finnhub.DefaultApi()
 
-        finnhubClient.quote("AAPL", (error, data, response) => setLiveApple(data.c))
-        finnhubClient.quote("TSLA", (error, data, response) => setLiveTesla(data.c))
-        finnhubClient.quote("NKE", (error, data, response) => setLiveNike(data.c))
-        finnhubClient.quote("MSFT", (error, data, response) => setLiveMicrosoft(data.c))
-        finnhubClient.quote("META", (error, data, response) => setLiveMeta(data.c))
-        finnhubClient.quote("DIS", (error, data, response) => setLiveDisney(data.c))
-        finnhubClient.quote("AMZN", (error, data, response) => setLiveAmazon(data.c))
-        finnhubClient.quote("NVDA", (error, data, response) => setLiveNvidia(data.c))
-        finnhubClient.quote("SBUX", (error, data, response) => setLiveStarbucks(data.c))
-        finnhubClient.quote("NFLX", (error, data, response) => setLiveNetflix(data.c))
+        // fetching live data for 10 stocks from finnhub
+        selectedCompanies.forEach(({stockSymbol})=>{
+            finnhubClient.quote(stockSymbol, (error, data, response) => {
+                if(error) return console.log(error)
+                setLive(p=>({...p, [stockSymbol]: {
+                    c: data.c,
+                    d: data.d
+                }}))
+            })
+        })
 
 
+        //
     
-    //   setTimeout(()=>{
-    //     finnhubClient.quote("AAPL", (error, data, response) => {
-    //       if(error) return console.error(error) 
-    //       console.log(data, response)
-    //       setAppleStock(data)
+        // selectedCompanies.forEach(({stockSymbol}) => {
+        //     finnhubClient.stockCandles(stockSymbol, "D", parseInt((Date.now() - 1000*60*60*24*numberOfDaysToFetch)/1000), parseInt(Date.now() / 1000), (error, data, response) => {
+        //         if(error) return console.error(error)
+        //         if(data.s === "ok") {
+        //             setCandles(p=>({...p, [stockSymbol]: {c: data.c}}))
+        //         }
+        //     }); 
+        // })
+
+    // setInterval(() => {
+    //     selectedCompanies.forEach(({stockSymbol}) => {
+    //         finnhubClient.stockCandles(stockSymbol, "W", parseInt(Date.now()/1000)-60, parseInt(Date.now() / 1000), (error, data, response) => {
+    //             if(error) return console.error(error)
+    //             console.log(data, response)
+    //             if(data.s === "ok")  setCandles(p=>({...p, [stockSymbol]: [...p[stockSymbol], data.c]})) 
+    //         });
     //     });
-    //   },5000)
+    // }, 1000*60*1)
+
   
       // get news for apple between two time periods
       // finnhubClient.companyNews("AAPL", "2022-01-01", "2022-11-10", (error, data, response) => {
       //   if(error) return console.error(error)
       //   console.log(data, response)
       // });
-  
-      //initial price data for last 24 hours
-    //   finnhubClient.stockCandles("AAPL", "1", parseInt((Date.now() - 1000*60*60*24)/1000), parseInt(Date.now() / 1000), (error, data, response) => {
-    //     if(error) return console.error(error)
-    //     console.log(data, response)
-    //     if(data.s === "ok") setAppleCandles24(data.c)
-    //   });
-
-    //   // continue to get apple price every 1 minute
-    //   setInterval(()=>{
-    //     finnhubClient.stockCandles("AAPL", "1", parseInt(Date.now()/1000)-60, parseInt(Date.now() / 1000), (error, data, response) => {
-    //       if(error) return console.error(error.message)
-    //       console.log(data, response)
-    //       if(data.s === "ok") setAppleCandles24(prev => [...prev, data.c[0]])
-    //     });
-    //   }, 1000*60*1)
     }, [])
-  
+
+    // console.log(rawData)
+    
+    
     // useEffect(()=> {
-    //   console.log("apple update", appleCandles24)
-    //   if(appleCandles24.length > 0) {
-    //     setHigh(Math.max(...appleCandles24))
-    //     setLow(Math.min(...appleCandles24))
-    //   }
-    // }, [appleCandles24])
+    //     console.log(888,candles[selectedCompany])
+    //     // console.log("candles data updated: ", candles)
+    // }, [candles])
 
-
+    // 1) fix stock component to read new data "live" data format ( object full of objects )
     return (
         <div className="MainPage flex justify-between items-start h-[85vh] px-8 py-4">
             <div className="w-3/12 h-full border-2 border-black px-4 py-4">
+            {/*<p>{JSON.stringify(rawData[0])}</p> */}
                 <Stocks 
-                    liveApple={liveApple}
-                    liveTesla={liveTesla}
-                    liveNike={liveNike}
-                    liveMicrosoft={liveMicrosoft}
-                    liveMeta={liveMeta}
-                    liveDisney={liveDisney}
-                    liveAmazon={liveAmazon}
-                    liveNvidia={liveNvidia}
-                    liveStarbucks={liveStarbucks}
-                    liveNetflix={liveNetflix}
+                    live={live}
+                    selectedCompanies={selectedCompanies}
+                    selectedCompany={selectedCompany}
+                    setSelectedCompany={setSelectedCompany}
                 />
             </div>
-            <div className="flex justify-between items-start flex-col w-8/12 h-full border-2 border-black gap-4 px-4 py-4">
-                <Diagram />
+            {/*<div className="flex justify-between items-start flex-col w-8/12 h-full border-2 border-black gap-4 px-4 py-4">
+                <Diagram 
+                    // data={candles[selectedCompany]}
+                    // data={data}
+                    selectedCompany={selectedCompany}
+
+                />
                 <div className="flex justify-between items-start gap-4 w-full h-2/5">
-                    <Rise />
+                    {<Rise />
                     <Fall />
                 </div>
-            </div>
+            </div>*/}
         </div>
     )
 }
