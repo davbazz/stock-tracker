@@ -18,7 +18,6 @@ function Stocks({ selectedCompany, setSelectedCompany, selectedCompanies, live }
             {Object.keys(live).map(stockKey => {
                 const stock = live[stockKey]
                 const company = selectedCompanies.find(c => c.stockSymbol == stockKey)
-                // console.log({stockKey, stock, company})
                 return (
                     <div className="flex justify-between items-center w-full"
                         style={{
@@ -39,15 +38,6 @@ function Stocks({ selectedCompany, setSelectedCompany, selectedCompanies, live }
                 }
             )}
             </div>
-            
-            {/*<div className="list flex justify-between items-center">
-                <div className="name flex flex-col">
-                    <span>short name</span>
-                    <span>full name</span>
-                </div>
-                <div>chart</div>
-                <div>price</div>
-            </div>*/}
         </div>
     )
 }

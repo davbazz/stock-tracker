@@ -2,27 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes bounceDown {
+    from {
+        top: -10%;
+    }
+    40% {
+        top: 50%; 
+    }
+    70% {
+        top: 48%;
+    }
+    to {
+        top: 50%;
+    }
+}
+
 * {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
     font-family: 'Inter', sans-serif;
-}
-
-.App {
-    
-}
-
-.Intro {
-    position: absolute;
-    width: 100%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, 50%);
+    background-color: #f1f3f5;
 }
 
 h2 {
-    display: inline-block;
+    display: block;
     width: auto;
     position: absolute;
     top: 50%;
@@ -59,7 +63,7 @@ h2 {
 
 .and {
     opacity: 0;
-    transition: opacity 0.5s;
+    transition: opacity 0.8s;
 }
 
 .and-on {
@@ -68,16 +72,33 @@ h2 {
 }
 
 .search {
-    display: none;
+    visibility: hidden;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+}
+
+.search > h3 {
+    text-align: center;
+}
+
+.search > input {
+    text-align: center;
+    align-self: center;
 }
 
 .search-on {
-    display: block;
+    visibility: visible;
 }
 
 .bounce-animation {
-    animation: bounceInDown; /* referring directly to the animation's @keyframe declaration */
-    animation-duration: 2s; /* don't forget to set a duration! */
+    animation-duration: 1s;
+    animation-name: bounceDown;
 }
+
+.stocks-wrapper {
+    display: block;
+}
+
 
 
