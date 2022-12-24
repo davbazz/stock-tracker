@@ -4,14 +4,17 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "animate.css": "^4.1.1",
     "finnhub": "^1.2.16",
+    "plotly.js": "^2.16.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-plotly.js": "^2.6.0",
     "victory": "^36.6.8"
   },
   "devDependencies": {

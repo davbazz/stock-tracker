@@ -1,6 +1,6 @@
 function Seacrh() {
     return (
-        <div className="w-4/12">
+        <div className="">
             <input 
                 type="text" 
                 placeholder="Search"
