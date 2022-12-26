@@ -1,7 +1,14 @@
+function Footer({ showFooter }) {
 
-function Footer() {
+	const date = new Date()
+	const month = date.toLocaleString('en-US', {
+		month: 'long',
+	})
+	const footerDate = `${date.getDate()} ${month} ${date.getFullYear()}`
+
     return (
-        <div className="Footer absolute flex justify-between items-center w-full px-8 h-[6vh] border-2 border-t-black">
+	showFooter
+    ? <div className="Footer absolute flex justify-between items-center w-full px-8 h-[6vh] border-2 border-t-black">
             <div className="links flex justify-start items-center gap-4 w-4/12">
 				<div className="link">
 					<a href="https://t.me/davidbazashvili" target="_blank" alt="Telegram">
@@ -38,8 +45,9 @@ function Footer() {
 				</div>
 			</div>
             <span className="italic text-center w-4/12">designed by david bazashvili</span>
-            <span className="text-right w-4/12">November 2022</span>
+            <span className="text-right w-4/12">{footerDate}</span>
         </div>
+	: null
     )
 }
 

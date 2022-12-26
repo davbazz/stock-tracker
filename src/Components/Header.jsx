@@ -1,18 +1,15 @@
-import Search from '../Components/Search'
-
 function Header({ showHeader }) {
     return (
     showHeader 
-    ? <div className="Header flex justify-between items-center px-8 border-2 border-b-black h-[9vh]">
-            <Search />
+    ? <div className="Header relative px-8 py-4 border-2 border-b-black w-full h-[9vh]">
             <h1 
-                className="text-4xl text-center w-4/12">
+                className="block mx-auto text-4xl text-center w-4/12">
                 STOCKS TODAY
             </h1>
-            <button 
-                className="w-4/12 text-end">
+            {/*<button 
+                className="w-4/12 top-[10px] right-[10px] text-end">
                 themeToggle
-            </button>
+            </button>*/}
     </div>
     : null
     )

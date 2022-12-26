@@ -7,6 +7,9 @@ import Footer from './Components/Footer'
 function App() {
   const [showHeader, setShowHeader] = useState(false)
   const [showMainPage, setShowMainPage] = useState(false)
+  const [showFooter, setShowFooter] = useState(false)
+  // const [date, setDate] = useState(new Date())
+  // const [currentDate, setCurrentDate] = useState(`${date.getDate()-1}-${date.getMonth()+1}-${date.getFullYear()}`)
 
   // const [appleCandles24, setAppleCandles24] = useState([]);
   // const [high, setHigh] = useState(0);
@@ -59,7 +62,7 @@ function App() {
   
 
   return (
-    <div className="App relative h-screen">
+    <div className="App relative h-screen w-full">
       <Header 
         showHeader={showHeader}
       />
@@ -68,8 +71,11 @@ function App() {
         setShowHeader={setShowHeader}
         setShowMainPage={setShowMainPage}
         showMainPage={showMainPage}
+        setShowFooter={setShowFooter}
       />
-      {/*<Footer />*/}
+      <Footer 
+        showFooter={showFooter}
+      />
     </div>
   )
 }
