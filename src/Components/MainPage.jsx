@@ -1,10 +1,11 @@
-import Stocks from "./Stocks"
-// import Search from "./Search";
-import * as finnhub from 'finnhub'
 import { useEffect, useState } from 'react';
+import * as finnhub from 'finnhub'
+import Stocks from "./Stocks"
+import News from "./News";
+import StockData from './StockData';
 
 
-function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage}) {
+function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, setShowFooter}) {
 
     const [selectedCompanies, setSelectedCompanies] = useState([
         { name: 'Apple', stockSymbol: 'AAPL' },
@@ -18,25 +19,105 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage}) {
         { name: 'Starbucks', stockSymbol: 'SBUX' },
         { name: 'Netflix', stockSymbol: 'NFLX' }
     ])
-
-    const inputTop = "25%"
-    const inputInitialTop = "50%"
-
-
     const [selectedCompany, setSelectedCompany] = useState("AAPL")
+    const [liveSelectedCompany, setLiveSelectedCompany] = useState({})
     const [live, setLive] = useState({})
+    const [rawNews, setRawNews] = useState([])
+    const [filteredNews, setFilteredNews] = useState([])
+    const [successfulSymbolCheck, setSuccessfulSymbolCheck] = useState(false)
+    const [inputText, setInputText] = useState()
+    const [testDataResult, setTestDataResult] = useState()
+    const [showErrorMessage, setShowErrorMessage] = useState(false)
+    const [errorMessage, setErrorMessage] = useState()
 
+    // const reverseDate = JSON.stringify(`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()-1}`)
 
-    const inputOnKeyUp = (event) => {
-        if (event.key === 'Enter') {
-            if (showHeader == false && showMainPage == false) {
+    // finhub api connection
+    const api_key_finnhub = finnhub.ApiClient.instance.authentications['api_key'];
+    api_key_finnhub.apiKey = "cdukjcaad3ib3oqti880cdukjcaad3ib3oqti88g"
+    const finnhubClient = new finnhub.DefaultApi()
+
+    // fetching test data
+    const checkSymbol = () => finnhubClient.symbolSearch(inputText, (error, data, response) => {
+        console.log(data)
+        try {
+            if (data.result[0].symbol != undefined && data.result[0].symbol === inputText) {
+                setSuccessfulSymbolCheck(true)
                 setShowHeader(true)
                 setShowMainPage(true)
+                setShowFooter(true)
+                setSelectedCompany(inputText)
+            } else {
+                setErrorMessage(`Stock symbol is not defined`)
+                setShowErrorMessage(true)
             }
+        } catch (error) {
+            setErrorMessage(`Stock symbol is not defined`)
+            setShowErrorMessage(true)
+        }
+    });
+
+    
+    // fetching live data for 10 stocks from finnhub
+    const getLiveDataForTenStocks = () => {
+        selectedCompanies.forEach(({stockSymbol}) => {
+        finnhubClient.quote(stockSymbol, (error, data, response) => {
+            setLive(p=>({...p, [stockSymbol]: {
+                c: data.c,
+                dp: data.dp,
+                h: data.h,
+                l: data.l,
+                o: data.o,
+                pc: data.pc
+            }}))
+        })
+    })}
+
+    const getLiveDataForSelectedCompany = () => {
+        finnhubClient.quote(selectedCompany, (error, data, response) => {
+            if(error) return console.log(error)
+            setLiveSelectedCompany(item => ({[selectedCompany]: {
+                c: data.c,
+                dp: data.dp,
+                h: data.h,
+                l: data.l,
+                o: data.o,
+                pc: data.pc
+            }}))
+        })
+    }
+    
+    // fetching news for selectedCompany from finnhub
+    const getNews = () => finnhubClient.companyNews(selectedCompany, "2022-12-23", "2022-12-23", (error, data, response) => {
+        setRawNews(data)
+    })
+
+    const toCapitalLetters = (event) => {
+        const result = event.target.value.toUpperCase();
+        setInputText(result);
+    }
+
+    const errorShortMessage = (event) => {
+        if (event.key === 'Enter' && event.target.value.length < 1) {
+            setErrorMessage(`Please enter stock symbol`)
+            setShowErrorMessage(true)
         }
     }
 
+    // show mainPage after intro
+    const inputOnKeyUp = (event) => {
+        errorShortMessage(event)
+        if (event.key === 'Enter' && event.target.value.length >= 1) {
+            console.log(event.target.value)
+            if (showErrorMessage == true) {
+                setShowErrorMessage(false)
+                setErrorMessage(null)
+            }
+            checkSymbol()
+        }
+    }
 
+    // intro functions
     const helloOff = () => setTimeout(() => {
         document.querySelector(".hello").classList.add('hello-off')
     }, 1500)
@@ -70,24 +151,8 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage}) {
         document.querySelector(".search").classList.add('bounce-animation')
     }, 7600)
 
-
-
+    
     useEffect(() => {
-        // finhub api connection
-        const api_key_finnhub = finnhub.ApiClient.instance.authentications['api_key'];
-        api_key_finnhub.apiKey = "cdukjcaad3ib3oqti880cdukjcaad3ib3oqti88g"
-        const finnhubClient = new finnhub.DefaultApi()
-
-        // fetching live data for 10 stocks from finnhub
-        selectedCompanies.forEach(({stockSymbol})=>{
-            finnhubClient.quote(stockSymbol, (error, data, response) => {
-                if(error) return console.log(error)
-                setLive(p=>({...p, [stockSymbol]: {
-                    c: data.c,
-                    d: data.d
-                }}))
-            })
-        })
 
         // fire intro functions
         helloOff()
@@ -99,46 +164,69 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage}) {
         andOn()
         andOff()
 
+        // get live data + get news data
+        getLiveDataForTenStocks()
+        getLiveDataForSelectedCompany()
+        getNews()
+
     }, [])
 
+    useEffect(() => {
+        setFilteredNews(rawNews.filter(item => item.image.length > 3))
+    }, [rawNews])
+
+    useEffect(() => {
+        getNews()
+        getLiveDataForSelectedCompany()
+    }, [selectedCompany])
+
+    const showdata = (event) => {console.log(liveSelectedCompany)}
 
     return (
-        <div className="MainPage flex justify-between items-start h-full px-8 py-4">
-            <h2 className='hello'>hello</h2>
-            <h2 className='get-data get-data-off'>get data on stocks easily</h2>
-            <h2 className='just-enter'>just enter stock symbol in the search</h2>
-            <h2 className='and'>and that is it</h2>
+        <div className="MainPage flex justify-between items-start h-[85vh] px-8 py-4">
+            <h2 className='hello'>Hello</h2>
+            <h2 className='get-data get-data-off'>Get data on stocks easily</h2>
+            <h2 className='just-enter'>Just enter stock symbol in the search</h2>
+            <h2 className='and'>And that is it</h2>
             <div 
+                onClick={showdata}
                 className='search flex flex-col items-center justify-center w-2/12 border-2 border-red-500' 
                 style={{top: showMainPage   
-                    ? inputTop
-                    : inputInitialTop
+                    ? "25%"
+                    : "50%"
                 }}>
-                <h3>Just enter stock symbol</h3>
+                <h3>Enter stock symbol</h3>
                 <input 
+                    onChange={toCapitalLetters}
                     onKeyUp={inputOnKeyUp}
+                    value={inputText}
                     type="text" 
                     placeholder="Search"
                     className="mx-auto"
                 />
+                {showErrorMessage 
+                ?   <div className='w-full bg-slate-50'>
+                        <h4>{errorMessage}</h4>
+                        <p>Your</p>
+                    </div>
+                :   null}
             </div>
 
             {showMainPage
             ? <div className="flex justify-between items-end w-full h-full">
-                <div className="stocks-wrapper w-3/12 h-full border-2 border-black px-4 py-4">
-                    <Stocks 
-                        live={live}
-                        selectedCompanies={selectedCompanies}
-                        selectedCompany={selectedCompany}
-                        setSelectedCompany={setSelectedCompany}
-                    />
-                </div>
-                <div className="stock-data w-4/12 h-[50%] border-2 border-black px-4 py-4">
-                    stock data
-                </div>
-                <div className="news w-3/12 h-full border-2 border-black px-4 py-4">
-                    stock news
-                </div>
+                <Stocks 
+                    live={live}
+                    selectedCompanies={selectedCompanies}
+                    selectedCompany={selectedCompany}
+                    setSelectedCompany={setSelectedCompany}
+                />
+                <StockData 
+                    selectedCompany={selectedCompany}
+                    liveSelectedCompany={liveSelectedCompany}
+                />
+                <News 
+                    filteredNews={filteredNews}
+                />
             </div>
             : null}
         </div>
@@ -149,7 +237,14 @@ export default MainPage
 
 
 
+
 {/*
+
+
+        // const date = new Date()
+    // const currentDate = JSON.stringify(`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()-1}`)
+
+
     // setInterval(() => {
     //     selectedCompanies.forEach(({stockSymbol}) => {
     //         finnhubClient.stockCandles(stockSymbol, "W", parseInt(Date.now()/1000)-60, parseInt(Date.now() / 1000), (error, data, response) => {

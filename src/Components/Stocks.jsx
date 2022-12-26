@@ -1,17 +1,6 @@
 function Stocks({ selectedCompany, setSelectedCompany, selectedCompanies, live }) {
-    // "live" looks like this 
-    // {
-    //     APPL: {
-    //         c: 2,
-    //         d: 2
-    //     },
-    //     AMZN: {
-    //         c: 2,
-    //         d: 2
-    //     },
-    // }
     return (
-        <div className="Stocks">
+        <div className="stocks-wrapper w-3/12 h-full border-2 border-black px-4 py-4">
             <h3 className="text-xl text-center">Often looking for</h3>
             <div className="flex justify-between items-center flex-col">
 
@@ -31,8 +20,8 @@ function Stocks({ selectedCompany, setSelectedCompany, selectedCompanies, live }
                         </div>
                         <div className="w-4/12 text-center">chart</div>
                         <div className="flex flex-col w-4/12 text-right">
-                            <span>{stock.c}</span>
-                            <span>{stock.d}</span>
+                            <span>{parseFloat(stock.c).toFixed(2)}</span>
+                            <span>{parseFloat(stock.dp).toFixed(2)}</span>
                         </div>
                     </div>)
                 }
