@@ -8,7 +8,7 @@ import StockData from './StockData';
 function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, setShowFooter}) {
 
     const [selectedCompanies, setSelectedCompanies] = useState([
-        { name: 'Apple', stockSymbol: 'AAPL' },
+        { name: 'Apple Inc', stockSymbol: 'AAPL' },
         { name: 'Tesla', stockSymbol: 'TSLA' },
         { name: 'Nike', stockSymbol: 'NKE' },
         { name: 'Microsoft', stockSymbol: 'MSFT' },
@@ -16,7 +16,7 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, se
         { name: 'Disney', stockSymbol: 'DIS' },
         { name: 'Amazon', stockSymbol: 'AMZN' },
         { name: 'Nvidia', stockSymbol: 'NVDA' },
-        { name: 'Starbucks', stockSymbol: 'SBUX' },
+        { name: 'Google', stockSymbol: 'GOOG' },
         { name: 'Netflix', stockSymbol: 'NFLX' }
     ])
     const [selectedCompany, setSelectedCompany] = useState("AAPL")
@@ -26,11 +26,11 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, se
     const [filteredNews, setFilteredNews] = useState([])
     const [successfulSymbolCheck, setSuccessfulSymbolCheck] = useState(false)
     const [inputText, setInputText] = useState()
-    const [testDataResult, setTestDataResult] = useState()
     const [showErrorMessage, setShowErrorMessage] = useState(false)
     const [errorMessage, setErrorMessage] = useState()
-
-    // const reverseDate = JSON.stringify(`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()-1}`)
+    const [currentDate, setCurrentDate] = useState("2022-12-20")
+    const [monthBeforeDate, setMonthBeforeDate] = useState("2022-11-20")
+    const [intro, setIntro] = useState(true)
 
     // finhub api connection
     const api_key_finnhub = finnhub.ApiClient.instance.authentications['api_key'];
@@ -39,7 +39,6 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, se
 
     // fetching test data
     const checkSymbol = () => finnhubClient.symbolSearch(inputText, (error, data, response) => {
-        console.log(data)
         try {
             if (data.result[0].symbol != undefined && data.result[0].symbol === inputText) {
                 setSuccessfulSymbolCheck(true)
@@ -48,49 +47,63 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, se
                 setShowFooter(true)
                 setSelectedCompany(inputText)
             } else {
-                setErrorMessage(`Stock symbol is not defined`)
+                setErrorMessage(`${inputText} is not defined`)
                 setShowErrorMessage(true)
             }
         } catch (error) {
-            setErrorMessage(`Stock symbol is not defined`)
+            setErrorMessage(`${inputText} is not defined`)
             setShowErrorMessage(true)
         }
     });
 
-    
     // fetching live data for 10 stocks from finnhub
     const getLiveDataForTenStocks = () => {
-        selectedCompanies.forEach(({stockSymbol}) => {
-        finnhubClient.quote(stockSymbol, (error, data, response) => {
-            setLive(p=>({...p, [stockSymbol]: {
-                c: data.c,
-                dp: data.dp,
-                h: data.h,
-                l: data.l,
-                o: data.o,
-                pc: data.pc
-            }}))
-        })
-    })}
+        try {
+            selectedCompanies.forEach(({stockSymbol}) => {
+                finnhubClient.quote(stockSymbol, (error, data, response) => {
+                    setLive(p=>({...p, [stockSymbol]: {
+                        c: data.c,
+                        dp: data.dp,
+                        h: data.h,
+                        l: data.l,
+                        o: data.o,
+                        pc: data.pc
+                    }}))
+                })
+            })
+        } catch(error) {
+            console.log(error)
+        }
+    }
 
     const getLiveDataForSelectedCompany = () => {
-        finnhubClient.quote(selectedCompany, (error, data, response) => {
-            if(error) return console.log(error)
-            setLiveSelectedCompany(item => ({[selectedCompany]: {
-                c: data.c,
-                dp: data.dp,
-                h: data.h,
-                l: data.l,
-                o: data.o,
-                pc: data.pc
-            }}))
-        })
+        try {
+            finnhubClient.quote(selectedCompany, (error, data, response) => {
+                if(error) return console.log(error)
+                setLiveSelectedCompany(() => ({[selectedCompany]: {
+                    c: data.c,
+                    dp: data.dp,
+                    h: data.h,
+                    l: data.l,
+                    o: data.o,
+                    pc: data.pc
+                }}))
+            })
+        } catch (error) {
+            console.log(error)
+        }
     }
     
     // fetching news for selectedCompany from finnhub
-    const getNews = () => finnhubClient.companyNews(selectedCompany, "2022-12-23", "2022-12-23", (error, data, response) => {
-        setRawNews(data)
-    })
+    const getNews = () => {
+        try {
+            finnhubClient.companyNews(selectedCompany, monthBeforeDate, currentDate, (error, data, response) => {
+                setRawNews(data)
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     const toCapitalLetters = (event) => {
         const result = event.target.value.toUpperCase();
@@ -108,12 +121,12 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, se
     const inputOnKeyUp = (event) => {
         errorShortMessage(event)
         if (event.key === 'Enter' && event.target.value.length >= 1) {
-            console.log(event.target.value)
             if (showErrorMessage == true) {
                 setShowErrorMessage(false)
                 setErrorMessage(null)
             }
             checkSymbol()
+            setInputText("")
         }
     }
 
@@ -146,14 +159,70 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, se
         document.querySelector(".and").classList.remove('and-on')
     }, 7500)
     
+    // normal delay is 7600
     const searchOn = () => setTimeout(() => {
         document.querySelector(".search").classList.add('search-on')
         document.querySelector(".search").classList.add('bounce-animation')
     }, 7600)
 
+    const removeIntro = () => {
+        setTimeout(() => {setIntro(false)}, 7700)
+    }
+
+    const getDate = () => {
+        const date = new Date()
+        let day = date.getDate()
+        let month = date.getMonth()
+        let year = date.getFullYear()
+        if (month < 11 && day < 10) {
+            if (month == 0) {
+                setCurrentDate(`${year}-0${month+1}-0${day}`)
+                setMonthBeforeDate(`${year-1}-${month+12}-0${day}`)   
+                return
+            }
+            if (month == 10){
+                setCurrentDate(`${year}-${month+1}-0${day}`)
+                setMonthBeforeDate(`${year}-0${month}-0${day}`)   
+                return
+            } 
+            if (month > 0 && month < 10) {
+                setCurrentDate(`${year}-0${month+1}-0${day}`)
+                setMonthBeforeDate(`${year}-0${month}-0${day}`)   
+                return
+            }
+        }
+        if (day < 10) {
+            if (month == 0) {
+                setCurrentDate(`${year}-${month+1}-0${day}`)
+                setMonthBeforeDate(`${year-1}-${month+12}-0${day}`) 
+                return  
+            } else {
+                setCurrentDate(`${year}-${month+1}-0${day}`)
+                setMonthBeforeDate(`${year}-${month}-0${day}`)   
+                return
+            }
+        }
+        if (month < 11) {
+            if (month == 0) {
+                setCurrentDate(`${year}-0${month+1}-${day}`)
+                setMonthBeforeDate(`${year-1}-${month+12}-${day}`)  
+                return 
+            } 
+            if (month == 10){
+                setCurrentDate(`${year}-${month+1}-${day}`)
+                setMonthBeforeDate(`${year}-0${month}-${day}`)  
+                return 
+            } 
+            if (month > 0 && month < 10) {
+                setCurrentDate(`${year}-0${month+1}-${day}`)
+                setMonthBeforeDate(`${year-1}-0${month}-${day}`)
+                return  
+            }
+        }
+    }
+
     
     useEffect(() => {
-
         // fire intro functions
         helloOff()
         getDataOn()
@@ -163,13 +232,18 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, se
         searchOn()
         andOn()
         andOff()
+        removeIntro()
 
-        // get live data + get news data
+        // get live data + get news data + date
+        setCurrentDate()
         getLiveDataForTenStocks()
         getLiveDataForSelectedCompany()
-        getNews()
-
+        getDate()
     }, [])
+
+    useEffect(() => {
+        getNews()
+    }, [currentDate, monthBeforeDate])
 
     useEffect(() => {
         setFilteredNews(rawNews.filter(item => item.image.length > 3))
@@ -178,36 +252,42 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, se
     useEffect(() => {
         getNews()
         getLiveDataForSelectedCompany()
+        setErrorMessage(null)
+        setShowErrorMessage(false)
     }, [selectedCompany])
 
-    const showdata = (event) => {console.log(liveSelectedCompany)}
-
     return (
-        <div className="MainPage flex justify-between items-start h-[85vh] px-8 py-4">
-            <h2 className='hello'>Hello</h2>
-            <h2 className='get-data get-data-off'>Get data on stocks easily</h2>
-            <h2 className='just-enter'>Just enter stock symbol in the search</h2>
-            <h2 className='and'>And that is it</h2>
+        <div className="MainPage flex justify-between items-start w-full h-[85vh] xl:px-8 md:px-4 sm:px-2 xl:pb-4 md:pb-2">
+            {intro 
+            ? <div>
+                <h2 className='hello xl:text-[2.5rem] lg:text-[2rem] md:text-[1.5rem]'>Hello</h2>
+                <h2 className='get-data xl:text-[2.5rem] lg:text-[2rem] md:text-[1.5rem]'>Get data on stocks easily</h2>
+                <h2 className='just-enter xl:text-[2.4rem] lg:text-[1.9rem] md:text-[1.4rem]'>Just enter stock symbol in the search</h2>
+                <h2 className='and xl:text-[2.5rem] lg:text-[2rem] md:text-[1.5rem] border-b-[4px] border-b-[#f97316]'>And click enter/return</h2>
+            </div>
+            : null}
             <div 
-                onClick={showdata}
-                className='search flex flex-col items-center justify-center w-2/12 border-2 border-red-500' 
-                style={{top: showMainPage   
-                    ? "25%"
+                className='search relative flex flex-col items-center justify-center xl:w-2/12 lg:w-[20%] md:w-[22%] lg:h-[10%] md:h-[9%] rounded-[3rem]' 
+                style={{top: showMainPage 
+                    ? showErrorMessage 
+                        ? "18%"
+                        : "22%" 
                     : "50%"
                 }}>
-                <h3>Enter stock symbol</h3>
                 <input 
                     onChange={toCapitalLetters}
                     onKeyUp={inputOnKeyUp}
                     value={inputText}
                     type="text" 
-                    placeholder="Search"
-                    className="mx-auto"
+                    placeholder="ENTER STOCK SYMBOL"
+                    className="mx-auto 2xl:text-lg xl:text-[1rem] lg:text-[0.9rem] md:text-[0.8rem] focus:xl:text-2xl focus:lg:text-[1.35rem] focus:md:text-[1.15rem] rounded-[3rem] h-full w-full outline-none border-2 border-darkPurple focus:border-[#f97316] focus:placeholder:text-transparent"
                 />
                 {showErrorMessage 
-                ?   <div className='w-full bg-slate-50'>
-                        <h4>{errorMessage}</h4>
-                        <p>Your</p>
+                ?   <div 
+                        className='w-[150%] absolute bg-[#fee2e2] rounded-[1rem] px-3 py-2 border-2 border-[#f87171]'
+                        style={{bottom: showMainPage ? "-100%" : "-100%"}}
+                    >
+                        <h4 className='text-center text-[#ef4444]'>{errorMessage}</h4>
                     </div>
                 :   null}
             </div>
