@@ -64,21 +64,21 @@ function StockData({ selectedCompany, liveSelectedCompany }) {
     const showdata = () => {console.log(priceYearAgo)}
 
     return(
-        <div onClick={showdata} className="stock-data w-4/12 h-[65%] xl:px-4 md:px-2 lg:py-4 md:py-2  rounded-[2rem] shadow-md shadow-[#ede9fe] bg-lightPurple border-[1px] border-darkPurple">
-            <h3 className="block text-center lg:text-2xl md:text-xl lg:leading-[3rem] md:leading-[2.5rem] text-darkPurple font-semibold">{selectedCompany}</h3>
-            <div className="h-[calc(100%-2.5rem)]">
+        <div onClick={showdata} className="stock-data sm:w-4/12 w-full h-[65%] sm:mt-40% mt-[35%] xl:px-4 md:px-2 lg:py-4 py-2 rounded-[2rem] shadow-md shadow-[#ede9fe] bg-lightPurple border-[1px] border-darkPurple item-end">
+            <h3 className="block text-center lg:text-2xl md:text-xl sm:text-lg text-xl lg:leading-[3rem] md:leading-[2.5rem] sm:leading-[2rem] text-darkPurple font-semibold">{selectedCompany}</h3>
+            <div className="relative lg:h-[calc(100%-3rem)] md:h-[calc(100%-2.5rem)] sm:h-[calc(100%-2rem)]">
             {liveSelectedCompany
             ? Object.entries(liveSelectedCompany).map((stockKey) => {
                 return (
                     <div className="stock-data-wrapper h-full cursor-default">
-                        <ul className="stock-data-left h-full xl:px-4 lg:px-2 md:px-1">
+                        <ul className="stock-data-left h-full xl:px-4 px-2">
                             <li className="flex justify-between items-center h-[20%]">
-                                <div className="lg:text-lg md:text-base uppercase font-medium border-b-[2px] border-b-[#f97316]">Current Price:</div>
+                                <div className="lg:text-lg md:text-base sm:text-sm text-base uppercase font-medium border-b-[2px] border-b-[#f97316]">Current Price:</div>
                                 <div className="flex flex-col items-center">
-                                    <div className="lg:text-lg md:text-base">
+                                    <div className="lg:text-lg md:text-base sm:text-sm ">
                                         {`${parseFloat(stockKey[1].c).toFixed(2)}`} $
                                     </div>
-                                    <div className="lg:text-lg md:text-base"
+                                    <div className="lg:text-lg md:text-base sm:text-sm "
                                         style={{color: getRightColor(stockKey[1].dp)}}>
                                         {`${parseFloat(stockKey[1].dp).toFixed(2)} %`}
                                     </div>
@@ -86,32 +86,32 @@ function StockData({ selectedCompany, liveSelectedCompany }) {
                             </li>
                             <li className="h-[10%]">
                                 <div className="flex justify-between items-end py-1 hover:border-b-[1px] hover:border-b-lightGrey">
-                                    <div className="xl:text-lg lg:text-base md:text-sm">Open Price:</div>
-                                    <div className="xl:text-lg lg:text-base md:text-sm" >{`${parseFloat(stockKey[1].o).toFixed(2)}`} $</div>
+                                    <div className="xl:text-lg lg:text-base md:text-sm sm:text-[12px]">Open Price:</div>
+                                    <div className="xl:text-lg lg:text-base md:text-sm sm:text-[12px] " >{`${parseFloat(stockKey[1].o).toFixed(2)}`} $</div>
                                 </div>
                             </li>
                             <li className="h-[10%]">
                                 <div className="flex justify-between items-end py-1 hover:border-b-[1px] hover:border-b-lightGrey">
-                                    <div className="xl:text-lg lg:text-base md:text-sm">Close Price:</div>
-                                    <div className="xl:text-lg lg:text-base md:text-sm" >{`${parseFloat(stockKey[1].c).toFixed(2)}`} $</div>
+                                    <div className="xl:text-lg lg:text-base md:text-sm sm:text-[12px]">Close Price:</div>
+                                    <div className="xl:text-lg lg:text-base md:text-sm sm:text-[12px]" >{`${parseFloat(stockKey[1].c).toFixed(2)}`} $</div>
                                 </div>
                             </li>
                             <li className="h-[10%]">
                                 <div className="flex justify-between items-end py-1 hover:border-b-[1px] hover:border-b-lightGrey">
-                                    <div className="xl:text-lg lg:text-base md:text-sm">High Price of the Day:</div>
-                                    <div className="xl:text-lg lg:text-base md:text-sm" >{`${parseFloat(stockKey[1].h).toFixed(2)}`} $</div>
+                                    <div className="xl:text-lg lg:text-base md:text-sm sm:text-[12px]">Daily High:</div>
+                                    <div className="xl:text-lg lg:text-base md:text-sm tsm:ext-[12px]" >{`${parseFloat(stockKey[1].h).toFixed(2)}`} $</div>
                                 </div>
                             </li>
                             <li className="h-[10%]">
                                 <div className="flex justify-between items-end py-1 hover:border-b-[1px] hover:border-b-lightGrey">
-                                    <div className="xl:text-lg lg:text-base md:text-sm">Low Price of the Day:</div>
-                                    <div className="xl:text-lg lg:text-base md:text-sm" >{`${parseFloat(stockKey[1].l).toFixed(2)}`} $</div>
+                                    <div className="xl:text-lg lg:text-base md:text-sm sm:text-[12px]">Daily Low:</div>
+                                    <div className="xl:text-lg lg:text-base md:text-sm sm:text-[12px]" >{`${parseFloat(stockKey[1].l).toFixed(2)}`} $</div>
                                 </div>
                             </li>
                             <li className="h-[10%]">
                                 <div className="flex justify-between items-end py-1 hover:border-b-[1px] hover:border-b-lightGrey">
-                                    <div className="xl:text-lg lg:text-base md:text-sm">Last Month Grow:</div>
-                                    <div className="xl:text-lg lg:text-base md:text-sm" 
+                                    <div className="xl:text-lg lg:text-base md:text-sm sm:text-[12px]">Last Month:</div>
+                                    <div className="xl:text-lg lg:text-base md:text-sm sm:text-[12px]" 
                                         style={{color: getRightColor(priceMonthAgo)}}>
                                         {priceMonthAgo} %
                                     </div>
@@ -119,8 +119,8 @@ function StockData({ selectedCompany, liveSelectedCompany }) {
                             </li>
                             <li className="h-[10%]">
                                 <div className="flex justify-between items-end py-1 hover:border-b-[1px] hover:border-b-lightGrey">
-                                    <div className="xl:text-lg lg:text-base md:text-sm">Last 3 Months Grow:</div>
-                                    <div className="xl:text-lg lg:text-base md:text-sm" 
+                                    <div className="xl:text-lg lg:text-base md:text-sm sm:text-[12px]">Last 3 Months:</div>
+                                    <div className="xl:text-lg lg:text-base md:text-sm sm:text-[12px]" 
                                         style={{color: getRightColor(priceThreeMonthAgo)}}>
                                         {priceThreeMonthAgo} %
                                     </div>
@@ -128,8 +128,8 @@ function StockData({ selectedCompany, liveSelectedCompany }) {
                             </li>
                             <li className="h-[10%]">
                                 <div className="flex justify-between items-end py-1 hover:border-b-[1px] hover:border-b-lightGrey">
-                                    <div className="xl:text-lg lg:text-base md:text-sm">Last 6 Months Grow:</div>
-                                    <div className="xl:text-lg lg:text-base md:text-sm" 
+                                    <div className="xl:text-lg lg:text-base md:text-sm sm:text-[12px]">Last 6 Months:</div>
+                                    <div className="xl:text-lg lg:text-base md:text-sm sm:text-[12px]" 
                                         style={{color: getRightColor(priceSixMonthAgo)}}>
                                         {priceSixMonthAgo} %
                                     </div>
@@ -137,8 +137,8 @@ function StockData({ selectedCompany, liveSelectedCompany }) {
                             </li>
                             <li className="h-[10%]">
                                 <div className="flex justify-between items-end pt-1 hover:border-b-[1px] hover:border-b-lightGrey">
-                                    <div className="xl:text-lg lg:text-base md:text-sm">Last Year Grow:</div>
-                                    <div className="xl:text-lg lg:text-base md:text-sm" 
+                                    <div className="xl:text-lg lg:text-base md:text-sm sm:text-[12px]">Last 12 Months:</div>
+                                    <div className="xl:text-lg lg:text-base md:text-sm sm:text-[12px]" 
                                         style={{color: getRightColor(priceYearAgo)}}>
                                         {priceYearAgo} %
                                     </div>
