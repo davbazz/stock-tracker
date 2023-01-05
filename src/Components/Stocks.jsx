@@ -1,4 +1,12 @@
-function Stocks({ selectedCompany, setSelectedCompany, selectedCompanies, live }) {
+import { useEffect } from 'react'
+
+function Stocks({ selectedCompany, setSelectedCompany, selectedCompanies, live, mobileDisplay }) {
+
+    const displayStocks = () => {
+        if (mobileDisplay == true) {
+            document.querySelector(".Stocks").classList.add('hide-when-mobile')
+        }
+    }
 
     const checkOnArrows = (number) => {
         if (number <= -6) {
@@ -140,9 +148,12 @@ function Stocks({ selectedCompany, setSelectedCompany, selectedCompanies, live }
         }
     }
 
+    useEffect(() => {
+        displayStocks()
+    }, [])
 
     return (
-        <div className="stocks-wrapper relative w-[29%]  h-full xl:px-4 lg:px-2 md:px-1 xl:py-4 md:py-0 md:pt-2 md:pb-3 lg:rounded-[2rem] rounded-[1.5rem] bg-lightPurple border-[1px] border-darkPurple">
+        <div className="Stocks relative w-[29%]  h-full xl:px-4 lg:px-2 md:px-1 xl:py-4 sm:py-0 md:pt-2 md:pb-3 sm:pt-1 sm:pb-2 lg:rounded-[2rem] rounded-[1.5rem] bg-lightPurple border-[1px] border-darkPurple">
             <h3 className="lg:text-2xl md:text-xl sm:text-lg lg:leading-[3rem] md:leading-[2.5rem] sm:leading-[2rem] text-center font-semibold text-darkPurple">Popular Choice</h3>
             <div className="flex justify-between items-center flex-col lg:h-[calc(100%-3rem)] md:h-[calc(100%-2.5rem)] sm:h-[calc(100%-2rem)]">
 
@@ -150,7 +161,7 @@ function Stocks({ selectedCompany, setSelectedCompany, selectedCompanies, live }
                 const stock = live[stockKey]
                 const company = selectedCompanies.find(c => c.stockSymbol == stockKey)
                 return (
-                    <div className="flex justify-between items-center w-full py-1 xl:px-4 lg:px-2 sm:px-1 rounded-xl h-[10%]"
+                    <div className="flex justify-between items-center w-full md:py-1 sm:py-0 xl:px-4 lg:px-2 sm:px-1 rounded-xl h-[10%]"
                         style={{
                             background: selectedCompany === stockKey ? "#c7d2fe" : "inherit",
                             border: selectedCompany === stockKey ? "solid 1px #6366f1" : null

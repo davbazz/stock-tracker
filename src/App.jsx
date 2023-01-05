@@ -9,7 +9,7 @@ function App() {
   const [showFooter, setShowFooter] = useState(false)
 
   return (
-    <div className="App relative h-screen w-full bg-[#f1f3f5]">
+    <div className="App relative sm:h-screen w-full bg-[#f1f3f5]">
       <Header 
         showHeader={showHeader}
       />

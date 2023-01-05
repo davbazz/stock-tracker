@@ -31,6 +31,7 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, se
     const [currentDate, setCurrentDate] = useState("2022-12-20")
     const [monthBeforeDate, setMonthBeforeDate] = useState("2022-11-20")
     const [intro, setIntro] = useState(true)
+    const [mobileDisplay, setMobileDisplay] = useState(false)
 
     // finhub api connection
     const api_key_finnhub = finnhub.ApiClient.instance.authentications['api_key'];
@@ -221,6 +222,15 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, se
         }
     }
 
+    const checkOnWidth = () => {
+        const size = window.innerWidth
+        if (size < 640) {
+            setMobileDisplay(true)
+            // document.querySelector(".Stocks").classList.add('hide-when-mobile')
+            // document.querySelector(".News").classList.add('hide-when-mobile')
+        }
+    }
+
     
     useEffect(() => {
         // fire intro functions
@@ -239,6 +249,9 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, se
         getLiveDataForTenStocks()
         getLiveDataForSelectedCompany()
         getDate()
+
+        // check screen size
+        checkOnWidth()
     }, [])
 
     useEffect(() => {
@@ -254,59 +267,75 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, se
         getLiveDataForSelectedCompany()
         setErrorMessage(null)
         setShowErrorMessage(false)
+        checkOnWidth()
     }, [selectedCompany])
 
+    const showdataw = () => {console.log(mobileDisplay)}
+
     return (
-        <div className="MainPage flex justify-between items-start w-full h-[85vh] xl:px-8 md:px-4 sm:px-2 xl:pb-4 md:pb-2">
+        <div className="MainPage sm:flex sm:justify-between sm:items-start w-full h-[85vh] xl:px-8 md:px-4 sm:px-3 px-8 xl:pb-4 md:pb-2">
             {intro 
             ? <div>
-                <h2 className='hello xl:text-[2.5rem] lg:text-[2rem] md:text-[1.5rem]'>Hello</h2>
-                <h2 className='get-data xl:text-[2.5rem] lg:text-[2rem] md:text-[1.5rem]'>Get data on stocks easily</h2>
-                <h2 className='just-enter xl:text-[2.4rem] lg:text-[1.9rem] md:text-[1.4rem]'>Just enter stock symbol in the search</h2>
-                <h2 className='and xl:text-[2.5rem] lg:text-[2rem] md:text-[1.5rem] border-b-[4px] border-b-[#f97316]'>And click enter/return</h2>
+                <h2 className='hello xl:text-[2.5rem] lg:text-[2rem] md:text-[1.5rem] text-[1.3rem]'>Hello</h2>
+                <h2 className='get-data text-center xl:text-[2.5rem] lg:text-[2rem] md:text-[1.5rem] text-[1.3rem]'>Get data on stocks easily</h2>
+                <h2 className='just-enter text-center xl:text-[2.4rem] lg:text-[1.9rem] md:text-[1.4rem] text-[1.2rem]'>Just enter stock symbol in the search</h2>
+                <h2 className='and xl:text-[2.5rem] lg:text-[2rem] md:text-[1.5rem] text-[1.3rem] lg:border-b-[4px] md:border-b-[3px] border-b-[2px] border-b-[#f97316]'>And click enter/return</h2>
             </div>
             : null}
             <div 
-                className='search relative flex flex-col items-center justify-center xl:w-2/12 lg:w-[20%] md:w-[22%] lg:h-[10%] md:h-[9%] rounded-[3rem]' 
+                className='search relative flex flex-col items-center justify-center xl:w-2/12 lg:w-[20%] md:w-[22%] sm:w-[30%] w-[50%] lg:h-[10%] h-[9%] rounded-[3rem]' 
                 style={{top: showMainPage 
                     ? showErrorMessage 
-                        ? "18%"
-                        : "22%" 
+                        ? mobileDisplay 
+                            ? "18%"
+                            : "20%"
+                        : "12%" 
                     : "50%"
                 }}>
                 <input 
+                    onClick={showdataw}
                     onChange={toCapitalLetters}
                     onKeyUp={inputOnKeyUp}
                     value={inputText}
                     type="text" 
                     placeholder="ENTER STOCK SYMBOL"
-                    className="mx-auto 2xl:text-lg xl:text-[1rem] lg:text-[0.9rem] md:text-[0.8rem] focus:xl:text-2xl focus:lg:text-[1.35rem] focus:md:text-[1.15rem] rounded-[3rem] h-full w-full outline-none border-2 border-darkPurple focus:border-[#f97316] focus:placeholder:text-transparent"
+                    className="mx-auto 2xl:text-lg xl:text-[1rem] lg:text-[0.9rem] text-[0.8rem] focus:xl:text-2xl focus:lg:text-[1.35rem] focus:text-[1.15rem] rounded-[3rem] h-full w-full outline-none border-2 border-darkPurple focus:border-[#f97316] focus:placeholder:text-transparent"
                 />
                 {showErrorMessage 
                 ?   <div 
-                        className='w-[150%] absolute bg-[#fee2e2] rounded-[1rem] px-3 py-2 border-2 border-[#f87171]'
-                        style={{bottom: showMainPage ? "-100%" : "-100%"}}
+                        className='md:w-[150%] sm:w-[110%] w-[130%] absolute bg-[#fee2e2] rounded-[1rem] px-3 py-2 border-2 border-[#f87171]'
+                        style={{bottom: showMainPage 
+                                ? mobileDisplay 
+                                    ? "110%" 
+                                    : "-100%"
+                                : mobileDisplay 
+                                    ? "200%" 
+                                    : "-100%"
+                            }}
                     >
-                        <h4 className='text-center text-[#ef4444]'>{errorMessage}</h4>
+                        <h4 className='text-center md:text-base text-sm text-[#ef4444]'>{errorMessage}</h4>
                     </div>
                 :   null}
             </div>
 
             {showMainPage
-            ? <div className="flex justify-between items-end w-full h-full">
+            ? <div className="sm:flex sm:justify-between sm:items-end w-full h-full">
                 <Stocks 
                     live={live}
                     selectedCompanies={selectedCompanies}
                     selectedCompany={selectedCompany}
                     setSelectedCompany={setSelectedCompany}
+                    mobileDisplay={mobileDisplay}
                 />
                 <StockData 
                     selectedCompany={selectedCompany}
                     liveSelectedCompany={liveSelectedCompany}
                 />
                 <News 
-                    filteredNews={filteredNews}
+                    filteredNews={filteredNews} 
+                    mobileDisplay={mobileDisplay}
                 />
+                
             </div>
             : null}
         </div>
