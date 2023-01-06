@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import * as finnhub from 'finnhub'
+import axios from 'axios';
 import Stocks from "./Stocks"
 import News from "./News";
 import StockData from './StockData';
@@ -38,37 +39,60 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, se
     api_key_finnhub.apiKey = "cdukjcaad3ib3oqti880cdukjcaad3ib3oqti88g"
     const finnhubClient = new finnhub.DefaultApi()
 
-    // fetching test data
-    const checkSymbol = () => finnhubClient.symbolSearch(inputText, (error, data, response) => {
-        try {
-            if (data.result[0].symbol != undefined && data.result[0].symbol === inputText) {
-                setSuccessfulSymbolCheck(true)
-                setShowHeader(true)
-                setShowMainPage(true)
-                setShowFooter(true)
-                setSelectedCompany(inputText)
-            } else {
-                setErrorMessage(`${inputText} is not defined`)
-                setShowErrorMessage(true)
-            }
-        } catch (error) {
-            setErrorMessage(`${inputText} is not defined`)
-            setShowErrorMessage(true)
-        }
-    });
+    const checkSymbol = () => {
+        axios.get(`https://finnhub.io/api/v1/search?q=${inputText}&token=cdukjcaad3ib3oqti880cdukjcaad3ib3oqti88g`)
+            .then(response => {
+                try {
+                    if (response.data.result[0].symbol != undefined && response.data.result[0].symbol === inputText) {
+                        setSuccessfulSymbolCheck(true)
+                        setShowHeader(true)
+                        setShowMainPage(true)
+                        setShowFooter(true)
+                        setSelectedCompany(inputText)
+                    } else {
+                        setErrorMessage(`${inputText} is not defined`)
+                        setShowErrorMessage(true)
+                    }
+                } catch (error) {
+                    setErrorMessage(`${inputText} is not defined`)
+                    setShowErrorMessage(true)
+                }
+            })
+    };
 
-    // fetching live data for 10 stocks from finnhub
+    // working example without axios
+    // fetching test data
+    // const checkSymbol = () => finnhubClient.symbolSearch(inputText, (error, data, response) => {
+    //     try {
+    //         if (data.result[0].symbol != undefined && data.result[0].symbol === inputText) {
+    //             setSuccessfulSymbolCheck(true)
+    //             setShowHeader(true)
+    //             setShowMainPage(true)
+    //             setShowFooter(true)
+    //             setSelectedCompany(inputText)
+    //         } else {
+    //             setErrorMessage(`${inputText} is not defined`)
+    //             setShowErrorMessage(true)
+    //         }
+    //     } catch (error) {
+    //         setErrorMessage(`${inputText} is not defined`)
+    //         setShowErrorMessage(true)
+    //     }
+    // });
+
+    // working example with axios
     const getLiveDataForTenStocks = () => {
         try {
             selectedCompanies.forEach(({stockSymbol}) => {
-                finnhubClient.quote(stockSymbol, (error, data, response) => {
+                axios.get(`https://finnhub.io/api/v1/quote?symbol=${stockSymbol}&token=cdukjcaad3ib3oqti880cdukjcaad3ib3oqti88g`)
+                .then(response => {
                     setLive(p=>({...p, [stockSymbol]: {
-                        c: data.c,
-                        dp: data.dp,
-                        h: data.h,
-                        l: data.l,
-                        o: data.o,
-                        pc: data.pc
+                        c: response.data.c,
+                        dp: response.data.dp,
+                        h: response.data.h,
+                        l: response.data.l,
+                        o: response.data.o,
+                        pc: response.data.pc
                     }}))
                 })
             })
@@ -77,34 +101,91 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, se
         }
     }
 
+    // working example without axios
+    // fetching live data for 10 stocks from finnhub
+    // const getLiveDataForTenStocks = () => {
+    //     try {
+    //         selectedCompanies.forEach(({stockSymbol}) => {
+    //             finnhubClient.quote(stockSymbol, (error, data, response) => {
+    //                 setLive(p=>({...p, [stockSymbol]: {
+    //                     c: data.c,
+    //                     dp: data.dp,
+    //                     h: data.h,
+    //                     l: data.l,
+    //                     o: data.o,
+    //                     pc: data.pc
+    //                 }}))
+    //             })
+    //         })
+    //     } catch(error) {
+    //         console.log(error)
+    //     }
+    // }
+
+    // working example with axios
     const getLiveDataForSelectedCompany = () => {
         try {
-            finnhubClient.quote(selectedCompany, (error, data, response) => {
-                if(error) return console.log(error)
-                setLiveSelectedCompany(() => ({[selectedCompany]: {
-                    c: data.c,
-                    dp: data.dp,
-                    h: data.h,
-                    l: data.l,
-                    o: data.o,
-                    pc: data.pc
-                }}))
-            })
+            axios.get(`https://finnhub.io/api/v1/quote?symbol=${selectedCompany}&token=cdukjcaad3ib3oqti880cdukjcaad3ib3oqti88g`)
+                .then(response => {
+                    console.log(response.data)
+                    setLiveSelectedCompany(() => ({[selectedCompany]: {
+                        c: response.data.c,
+                        dp: response.data.dp,
+                        h: response.data.h,
+                        l: response.data.l,
+                        o: response.data.o,
+                        pc: response.data.pc
+                    }}))
+                })
         } catch (error) {
             console.log(error)
         }
     }
-    
-    // fetching news for selectedCompany from finnhub
+
+    // working example without axios
+    // const getLiveDataForSelectedCompany = () => {
+    //     try {
+    //         finnhubClient.quote(selectedCompany, (error, data, response) => {
+    //             if(error) return console.log(error)
+    //             setLiveSelectedCompany(() => ({[selectedCompany]: {
+    //                 c: data.c,
+    //                 dp: data.dp,
+    //                 h: data.h,
+    //                 l: data.l,
+    //                 o: data.o,
+    //                 pc: data.pc
+    //             }}))
+    //         })
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
+
+    // working axios example
     const getNews = () => {
         try {
-            finnhubClient.companyNews(selectedCompany, monthBeforeDate, currentDate, (error, data, response) => {
-                setRawNews(data)
-            })
+            axios.get(`https://finnhub.io/api/v1/company-news?symbol=${selectedCompany}&from=${monthBeforeDate}&to=${currentDate}&token=cdukjcaad3ib3oqti880cdukjcaad3ib3oqti88g`)
+                .then(response => {
+                    console.log(response.data)
+                    setRawNews(response.data)
+                })
         } catch (error) {
             console.log(error)
         }
     }
+
+    
+    // working example without axios
+    // fetching news for selectedCompany from finnhub
+    // const getNews = () => {
+    //     try {
+    //         finnhubClient.companyNews(selectedCompany, monthBeforeDate, currentDate, (error, data, response) => {
+    //             setRawNews(data)
+    //         })
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
 
     const toCapitalLetters = (event) => {
         const result = event.target.value.toUpperCase();
