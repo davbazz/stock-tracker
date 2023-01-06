@@ -354,23 +354,25 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, se
     const showdataw = () => {console.log(mobileDisplay)}
 
     return (
-        <div className="MainPage sm:flex sm:justify-between sm:items-start w-full h-[85vh] xl:px-8 md:px-4 sm:px-3 px-8 xl:pb-4 md:pb-2">
+        <div className="MainPage sm:flex sm:justify-between sm:items-start w-full sm:h-[85vh] h-auto xl:px-8 md:px-4 sm:px-3 px-8 xl:pb-4 md:pb-2">
             {intro 
             ? <div>
-                <h2 className='hello xl:text-[2.5rem] lg:text-[2rem] md:text-[1.5rem] text-[1.3rem]'>Hello</h2>
-                <h2 className='get-data text-center xl:text-[2.5rem] lg:text-[2rem] md:text-[1.5rem] text-[1.3rem]'>Get data on stocks easily</h2>
-                <h2 className='just-enter text-center xl:text-[2.4rem] lg:text-[1.9rem] md:text-[1.4rem] text-[1.2rem]'>Just enter stock symbol in the search</h2>
-                <h2 className='and xl:text-[2.5rem] lg:text-[2rem] md:text-[1.5rem] text-[1.3rem] lg:border-b-[4px] md:border-b-[3px] border-b-[2px] border-b-[#f97316]'>And click enter/return</h2>
+                <h2 className='hello text-center xl:text-[2.5rem] lg:text-[2rem] md:text-[1.5rem] text-[1.4rem]'>Hello</h2>
+                <h2 className='get-data text-center xl:text-[2.5rem] lg:text-[2rem] md:text-[1.5rem] text-[1.4rem]'>Get data on stocks easily</h2>
+                <h2 className='just-enter text-center xl:text-[2.4rem] lg:text-[1.9rem] md:text-[1.4rem] text-[1.4rem]'>Just enter stock symbol in the search</h2>
+                <h2 className='and text-center xl:text-[2.5rem] lg:text-[2rem] md:text-[1.5rem] text-[1.4rem] lg:border-b-[4px] md:border-b-[3px] border-b-[2px] border-b-[#f97316]'>And click enter/return</h2>
             </div>
             : null}
             <div 
-                className='search relative flex flex-col items-center justify-center xl:w-2/12 lg:w-[20%] md:w-[22%] sm:w-[30%] w-[50%] lg:h-[10%] h-[9%] rounded-[3rem]' 
+                className='search relative flex flex-col items-center justify-center xl:w-2/12 lg:w-[20%] md:w-[22%] sm:w-[30%] w-[60%] lg:h-[10%] h-[11%] rounded-[3rem]' 
                 style={{top: showMainPage 
                     ? showErrorMessage 
                         ? mobileDisplay 
                             ? "18%"
                             : "20%"
-                        : "12%" 
+                        : mobileDisplay 
+                            ? "17%"
+                            : "23%" 
                     : "50%"
                 }}>
                 <input 
@@ -380,7 +382,7 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, se
                     value={inputText}
                     type="text" 
                     placeholder="ENTER STOCK SYMBOL"
-                    className="mx-auto 2xl:text-lg xl:text-[1rem] lg:text-[0.9rem] text-[0.8rem] focus:xl:text-2xl focus:lg:text-[1.35rem] focus:text-[1.15rem] rounded-[3rem] h-full w-full outline-none border-2 border-darkPurple focus:border-[#f97316] focus:placeholder:text-transparent"
+                    className="mx-auto 2xl:text-lg xl:text-[1rem] lg:text-[0.9rem] sm:text-[0.8rem] text-[1rem] focus:xl:text-2xl focus:lg:text-[1.35rem] sm:focus:text-[1.15rem] focus:text-[1.4rem] rounded-[3rem] h-full w-full outline-none border-2 border-darkPurple focus:border-[#f97316] focus:placeholder:text-transparent"
                 />
                 {showErrorMessage 
                 ?   <div 
@@ -388,19 +390,21 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, se
                         style={{bottom: showMainPage 
                                 ? mobileDisplay 
                                     ? "110%" 
-                                    : "-100%"
+                                    : "-90%"
                                 : mobileDisplay 
                                     ? "200%" 
                                     : "-100%"
                             }}
                     >
-                        <h4 className='text-center md:text-base text-sm text-[#ef4444]'>{errorMessage}</h4>
+                        <h4 
+                            className='text-center md:text-base sm:text-sm text-base text-[#ef4444'>       {errorMessage}
+                        </h4>
                     </div>
                 :   null}
             </div>
 
             {showMainPage
-            ? <div className="sm:flex sm:justify-between sm:items-end w-full h-full">
+            ? <div className="sm:flex sm:justify-between sm:items-end w-full sm:h-full h-[calc(85vh-13%)]">
                 <Stocks 
                     live={live}
                     selectedCompanies={selectedCompanies}

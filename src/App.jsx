@@ -4,27 +4,34 @@ import MainPage from './Components/MainPage'
 import Footer from './Components/Footer'
 
 function App() {
-  const [showHeader, setShowHeader] = useState(false)
-  const [showMainPage, setShowMainPage] = useState(false)
-  const [showFooter, setShowFooter] = useState(false)
+	const [showHeader, setShowHeader] = useState(false)
+	const [showMainPage, setShowMainPage] = useState(false)
+	const [showFooter, setShowFooter] = useState(false)
 
-  return (
-    <div className="App relative sm:h-screen w-full bg-[#f1f3f5]">
-      <Header 
-        showHeader={showHeader}
-      />
-      <MainPage 
-        showHeader={showHeader}
-        setShowHeader={setShowHeader}
-        setShowMainPage={setShowMainPage}
-        showMainPage={showMainPage}
-        setShowFooter={setShowFooter}
-      />
-      <Footer 
-        showFooter={showFooter}
-      />
-    </div>
-  )
+	function appHeight() {
+		const doc = document.documentElement
+		doc.style.setProperty('--vh', (window.innerHeight*.01) + 'px');
+		}
+		window.addEventListener('resize', appHeight);
+		appHeight();
+
+	return (
+		<div className="App screen-size relative w-full bg-[#f1f3f5]">
+			<Header 
+				showHeader={showHeader}
+			/>
+			<MainPage 
+				showHeader={showHeader}
+				setShowHeader={setShowHeader}
+				setShowMainPage={setShowMainPage}
+				showMainPage={showMainPage}
+				setShowFooter={setShowFooter}
+			/>
+			<Footer 
+				showFooter={showFooter}
+			/>
+		</div>
+	)
 }
 
 export default App
