@@ -23,8 +23,12 @@
     margin: 0;
     font-family: sans-serif;
     color: #323538;
-    /* color: #54595e; this one is good grey */
-    /* color: #889096; */
+}
+
+.screen-size {
+    height: 100vh;
+    min-height: 600px; /* Fallback for browsers that do not support Custom Properties */
+    height: calc(var(--vh, 1vh) * 100);
 }
 
 h2 {
