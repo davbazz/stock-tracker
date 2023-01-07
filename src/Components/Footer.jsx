@@ -45,7 +45,7 @@ function Footer({ showFooter }) {
 				</div>
 			</div>
             <span className="italic text-center 2xl:text-lg md:text-base text-sm sm:w-4/12 w-full">designed by david bazashvili</span>
-            <span className="text-right 2xl:text-lg md:text-base text-sm w-4/12 sm:visible hidden">{footerDate}</span>
+            <span className="text-right 2xl:text-lg md:text-base text-sm w-4/12 sm:block hidden">{footerDate}</span>
         </div>
 	: null
     )

@@ -397,7 +397,8 @@ function MainPage({ showHeader, setShowHeader, showMainPage, setShowMainPage, se
                             }}
                     >
                         <h4 
-                            className='text-center md:text-base sm:text-sm text-base text-[#ef4444'>       {errorMessage}
+                            className='text-center md:text-base sm:text-sm text-base text-[#ef4444]'>
+                            {errorMessage}
                         </h4>
                     </div>
                 :   null}
@@ -431,28 +432,3 @@ export default MainPage
 
 
 
-
-{/*
-
-
-        // const date = new Date()
-    // const currentDate = JSON.stringify(`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()-1}`)
-
-
-    // setInterval(() => {
-    //     selectedCompanies.forEach(({stockSymbol}) => {
-    //         finnhubClient.stockCandles(stockSymbol, "W", parseInt(Date.now()/1000)-60, parseInt(Date.now() / 1000), (error, data, response) => {
-    //             if(error) return console.error(error)
-    //             console.log(data, response)
-    //             if(data.s === "ok")  setCandles(p=>({...p, [stockSymbol]: [...p[stockSymbol], data.c]})) 
-    //         });
-    //     });
-    // }, 1000*60*1)
-
-  
-      // get news for apple between two time periods
-      // finnhubClient.companyNews("AAPL", "2022-01-01", "2022-11-10", (error, data, response) => {
-      //   if(error) return console.error(error)
-      //   console.log(data, response)
-      // });
-*/}
